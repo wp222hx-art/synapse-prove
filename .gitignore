@@ -1,0 +1,62 @@
+# === Node / npm ===
+node_modules/
+.npm/
+
+# === Build Output ===
+dist/
+build/
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.js
+
+# === OS / Editor ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vs/
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# === Secrets / Env ===
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# === Claude Code / OMC(本地工具配置,不入库)===
+.claude/
+.omc/
+.github/
+CLAUDE.local.md
+
+# === CCGS Template 残留(不属于 synapse 产品)===
+/CLAUDE.md
+/CLAUDE 2.md
+/src/CLAUDE.md
+UPGRADING.md
+/LICENSE
+CCGS Skill Testing Framework/
+design/
+docs/
+production/
+expansions/
+
+# === Private design docs(不公开)===
+synapse_gamedesign_v4.md
+synapse_mvp.md
+synapse_tech_v4.md
+
+# === Source assets(大,可重新下载)===
+tools/raw/
+
+# === Misc ===
+*.log
+__pycache__/
+*.pyc
+*.pyo
