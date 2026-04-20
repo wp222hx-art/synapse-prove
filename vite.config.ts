@@ -39,6 +39,10 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
+    // allowedHosts: true 放开所有 Host 头校验
+    // dev server 不应该暴露到不信任网络;沙箱/反向代理场景直接信任即可
+    // 生产走 vite preview / nginx 都不读这个配置
+    allowedHosts: true,
   },
   build: {
     // 拆 chunk 优化首屏加载 + 让 vendor 缓存命中

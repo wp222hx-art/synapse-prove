@@ -56,12 +56,37 @@ function GLBObject({ biomeId }: BiomeObjectProps) {
       clone.position.z = -(box.min.z + box.max.z) / 2
     }
 
-    // 阴影投射
+    // 阴影投射 + 低模模型统一风格(flat shading 响应 vertex colors)
+    // ⚠ GLTFLoader 已构造的 MeshStandardMaterial 在后期改 vertexColors + needsUpdate
+    // 仍不会重编译 shader(Three.js shader cache key 不含 vertexColors 变化),
+    // 必须替换为全新 Material 才能让顶点色生效。
     clone.traverse(child => {
       const mesh = child as THREE.Mesh
       if (mesh.isMesh) {
         mesh.castShadow = true
         mesh.receiveShadow = true
+        const geom = mesh.geometry as THREE.BufferGeometry
+        const hasVertexColors = !!geom.getAttribute('color')
+        if (hasVertexColors) {
+          // lowpoly bake 产物:替换为全新 StandardMaterial,顶点色 + flat shading
+          const replace = (old: THREE.Material) => {
+            const oldPbr = old as THREE.MeshStandardMaterial
+            const next = new THREE.MeshStandardMaterial({
+              vertexColors: true,
+              flatShading: true,
+              metalness: 0,
+              roughness: 1,
+              // 保留原色调(若 baseColorFactor ≠ 白,仍与顶点色相乘)
+              color: oldPbr.color ? oldPbr.color.clone() : new THREE.Color(0xffffff),
+              side: oldPbr.side ?? THREE.FrontSide,
+            })
+            old.dispose?.()
+            return next
+          }
+          const mat = mesh.material as THREE.Material | THREE.Material[]
+          if (Array.isArray(mat)) mesh.material = mat.map(replace)
+          else if (mat) mesh.material = replace(mat)
+        }
       }
     })
     return clone

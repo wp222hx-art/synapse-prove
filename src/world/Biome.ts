@@ -11,6 +11,8 @@ export type BiomeId =
   | 'beach'
   | 'island'
   | 'ocean'
+  | 'autumn_forest'  // v4.1:新增秋林地貌(CC0 素材来自 tools/raw/Autumn Tree.glb)
+  | 'texture_woods'
 
 export interface BiomeDef {
   id: BiomeId
@@ -37,6 +39,10 @@ export const BIOMES: Record<BiomeId, BiomeDef> = {
   beach:     { id: 'beach',     label: '海滩', color: '#F0E0A0', height: BASE_HEIGHT, modelUrl: '/models/biomes/beach/coconut_palm.glb',    modelScale: 0.40, emoji: '🟨' },
   island:    { id: 'island',    label: '海岛', color: '#60D080', height: BASE_HEIGHT, modelUrl: '/models/biomes/island/lighthouse.glb',     modelScale: 0.15, emoji: '🟩' },
   ocean:     { id: 'ocean',     label: '大海', color: '#3888CC', height: -0.20,       modelUrl: '/models/biomes/ocean/sailboat.glb',        modelScale: 0.35, modelYOffset: 0.18, emoji: '🌊' },
+  // 秋林:偏橙红的落叶林,色调区别于 forest(深绿)和 grassland(嫩绿)
+  // 原始模型 bbox 高度 ~3.12m,scale 0.28 让树冠顶高度 ~0.87m,和 pine(0.32)一致
+  autumn_forest: { id: 'autumn_forest', label: '秋林', color: '#C67F3B', height: BASE_HEIGHT, modelUrl: '/models/biomes/autumn_forest/autumn_tree.glb', modelScale: 0.28, emoji: '🍂' },
+  texture_woods: { id: 'texture_woods', label: '纹林', color: '#5B7A3E', height: BASE_HEIGHT, modelUrl: '/models/biomes/texture_woods/texture_woods.glb', modelScale: 0.51, emoji: '🌳' },
 }
 
 // ─── 季节色彩偏移 ────────────────────────────

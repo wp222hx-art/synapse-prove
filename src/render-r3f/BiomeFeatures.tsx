@@ -10,12 +10,13 @@ interface BiomeFeatureProps {
 
 export function BiomeFeature({ biomeId }: BiomeFeatureProps) {
   switch (biomeId) {
-    case 'mountain': return <MountainFeature />
-    case 'glacier':  return <GlacierFeature />
-    case 'forest':   return <ForestFeature />
-    case 'desert':   return <DesertFeature />
+    case 'mountain':      return <MountainFeature />
+    case 'glacier':       return <GlacierFeature />
+    case 'forest':        return <ForestFeature />
+    case 'desert':        return <DesertFeature />
+    case 'autumn_forest': return <AutumnForestFeature />
     // island 不要半球(用户反馈丑),保持平地 + 灯塔
-    default:         return null
+    default:              return null
   }
 }
 
@@ -81,6 +82,27 @@ function IslandFeature() {
   )
 }
 
+// ─── 秋林:散落的落叶堆(3 个橙红小丘,点缀在树周围) ──────
+// 区别于 forest 的整块苔藓丘,用分散的小丘点缀更符合"落叶满地"的感觉
+function AutumnForestFeature() {
+  // 落叶堆:[x, z, radius, height, tintFactor]
+  const leafPiles: Array<[number, number, number, number, number]> = [
+    [ 0.38,  0.10, 0.22, 0.12, 1.00],  // 主色橙
+    [-0.30,  0.35, 0.18, 0.10, 0.88],  // 偏红
+    [ 0.05, -0.40, 0.20, 0.11, 1.10],  // 偏黄
+  ]
+  return (
+    <group>
+      {leafPiles.map(([x, z, r, h, tint], i) => (
+        <mesh key={i} castShadow receiveShadow position={[x, h / 2, z]} scale={[1, 0.55, 1]}>
+          <sphereGeometry args={[r, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <meshLambertMaterial color={tintColor(BIOMES.autumn_forest.color, tint)} flatShading />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
 // ─── 沙漠:扁平沙丘 ──────
 function DesertFeature() {
   const color = darken(BIOMES.desert.color, 0.92)
@@ -92,8 +114,13 @@ function DesertFeature() {
   )
 }
 
-// ─── helper:HEX 颜色乘以 factor ──────
+// ─── helper:HEX 颜色乘以 factor(<1 变暗,>1 变亮,clamp 到 [0,255]) ──────
 function darken(hex: string, factor: number): string {
+  return tintColor(hex, factor)
+}
+
+// 更通用的 tint:factor 可以 >1(变亮),用于秋林的黄色落叶等场景
+function tintColor(hex: string, factor: number): string {
   const c = parseInt(hex.slice(1), 16)
   const r = Math.max(0, Math.min(255, Math.floor((c >> 16) * factor)))
   const g = Math.max(0, Math.min(255, Math.floor(((c >> 8) & 0xff) * factor)))
